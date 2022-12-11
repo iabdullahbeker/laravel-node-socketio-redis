@@ -1,5 +1,5 @@
 class SendMessage {
-    constructor({ io, publisher_redis }) {
+    constructor({ io, publisher_redis,socket }) {
         this.io = io;
         this.publisher_redis = publisher_redis;
     }
@@ -9,6 +9,7 @@ class SendMessage {
             .of("/quotation_list")
             .use((socket, next) => {
                 next();
+                this.socket = socket;
                 // console.log(socket.id);
                 // const { quotation_uuid } = socket.handshake.query;
 
@@ -25,36 +26,31 @@ class SendMessage {
             .on('connection', (socket) => {
                 socket.on('send',(param) => {
                     this.messageSender({
-                        'quotation_uuid': '1231231',
+                        'body': 'Hello from ' + socket.id,
                         'socket_id': socket.id,
                     })
                     socket.emit('request', socket.id)
 
                 });
-                
+
                 socket.on('disconnecting', function () {
                     // io.emit('chat.message', 'User has disconnected.');
-                });
-
-                socket.on('inquire.result', (messageData) => {
-                    this.inquireForQuotations({
-                        ...messageData,
-                        socket_id: socket.id,
-                    });
                 });
             });
     }
 
-    messageSender({quotation_uuid, socket_id}) {
+    messageSender({body, socket_id}) {
         this.publisher_redis.publish("redis-app-send-test-from-js", JSON.stringify({
-            quotation_uuid,
+            body,
             socket_id,
         }));
     }
 
-    sendDataToClient({socket_id,message}){
-        console.log(socket_id,message)
-        this.io.to(socket_id).emit('request',message);
+    sendDataToClient({socket_id,body}){
+        // console.log(body)
+        this.socket.broadcast.emit('request',body); // broadcast
+        // this.socket.emit('request',message); // send to me
+        // this.io.local.emit('request',message); // send to all
     }
 }
 
