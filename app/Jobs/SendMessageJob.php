@@ -26,6 +26,7 @@ class SendMessageJob implements ShouldQueue
         info('job constructor');
         $this->message = $message;
         $this->socketId = json_decode($message,true)['socket_id'];
+        $this->body = json_decode($message,true)['body'];
     }
 
     /**
@@ -35,11 +36,11 @@ class SendMessageJob implements ShouldQueue
      */
     public function handle()
     {
-        info($this->socketId);
-        sleep(5);
+        // info($this->socketId);
+        // sleep(5);
         Redis::connection()->publish("send-message-to-client", json_encode([
-            "socket_id" => $this->socketId,
-            "message" => $this->message
+            "socketId" => $this->socketId,
+            "body" => $this->body
         ]));
     }
 }

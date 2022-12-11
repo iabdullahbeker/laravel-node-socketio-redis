@@ -40,10 +40,10 @@ class RedisSubscripeCommand extends Command
         Redis::connection('subscriber')->subscribe($events,function($message,$channel){
 
             $this->line("<fg=green>receiving .....</>");
+            $this->line(json_encode([$message]));
             if($channel == "redis-app-send-test-from-js"){
                 event(new SendMessageEvent($message));
             }
-            // $this->line(json_encode([$message,$channel]));
         });
     }
 }
