@@ -37,7 +37,7 @@ class RedisSubscripeCommand extends Command
 
         $this->line('<fg=green>listening to redis ...</>');
 
-        Redis::connection('subscriber')->subscribe($events,function($message,$channel){
+        Redis::connection()->subscribe($events,function($message,$channel){
 
             $this->line("<fg=green>receiving .....</>");
             $this->line(json_encode([$message]));
