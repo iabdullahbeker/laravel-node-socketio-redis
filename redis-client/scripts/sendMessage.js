@@ -40,6 +40,7 @@ class SendMessage {
     }
 
     messageSender({body, socket_id}) {
+        console.log('send')
         this.publisher_redis.publish("redis-app-send-test-from-js", JSON.stringify({
             body,
             socket_id,

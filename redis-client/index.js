@@ -28,8 +28,8 @@ subscriber_redis.subscribe("redis-app-send-message-to-client");
 subscriber_redis.on("message", (channel, data) => {
     console.log('redis', channel, data);
     if (channel === "redis-app-send-message-to-client") {
-        const { socket_id, message} = JSON.parse(data);
-        const {body} = JSON.parse(message);
+        const { socket_id, body} = JSON.parse(data);
+        // const {body} = JSON.parse(message);
         sendMessage.sendDataToClient({socket_id, body});
         // io.to(socket_id).emit('request', message);
     }

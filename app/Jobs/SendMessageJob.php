@@ -21,9 +21,11 @@ class SendMessageJob implements ShouldQueue
      */
     private $message;
     private $socketId;
+    private $body ;
     public function __construct($message)
     {
         info('job constructor');
+
         $this->message = $message;
         $this->socketId = json_decode($message,true)['socket_id'];
         $this->body = json_decode($message,true)['body'];
